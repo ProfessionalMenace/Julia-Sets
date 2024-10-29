@@ -25,16 +25,13 @@ class Window {
 private:
     SDL_Window *window;
     SDL_Renderer *renderer;
-    std::pair<int, int> winSize;
-    int scale;
 public:
     Window(int w, int h)
-        :winSize(w,h),
-        window(nullptr),
+        :window(nullptr),
         renderer(nullptr)
     {
         SDL_Init(SDL_INIT_VIDEO);
-        SDL_CreateWindowAndRenderer(w, h, 0, &window, &renderer);
+        SDL_CreateWindowAndRenderer(w, h, SDL_WINDOW_RESIZABLE, &window, &renderer);
         if(!window || !renderer){ exit(1); }
     }
     
@@ -56,13 +53,18 @@ public:
         float yMax = 2.0;
         float xDelta = (abs(xMax - xMin))/static_cast<float>(winSize.first);
         float yDelta = (abs(yMax - yMin))/static_cast<float>(winSize.second);
+        int winX;
+        int winY;
+        SDL_GetWindowSize(window, &winX, &winY);
+        float xDelta = (abs(xMax - xMin))/static_cast<float>(winX);
+        float yDelta = (abs(yMax - yMin))/static_cast<float>(winY);
         std::complex<float> z;
         std::complex<float> c(0.35, 0.35);
 
         float x, y;
         int i,j;
-        for(i = 0, x = xMin; i < winSize.first; ++i, x+=xDelta) {
-            for(j = 0, y = yMin; j < winSize.second; ++j, y+=yDelta) {
+        for(i = 0, x = xMin; i < winX; ++i, x+=xDelta) {
+            for(j = 0, y = yMin; j < winY; ++j, y+=yDelta) {
                 z = std::complex<float>(x, y);
                 if(juliaIter(z, c, 4.0, 25)) {
                     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -92,6 +94,12 @@ public:
             {
                 case SDL_QUIT:
                     quit = true;
+                    break;
+
+                case SDL_WINDOWEVENT:
+                    if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                        drawn = false;
+                    }
                     break;
             }
         }
