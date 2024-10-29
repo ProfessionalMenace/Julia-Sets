@@ -1,25 +1,6 @@
 #include <SDL2/SDL.h>
 #include <iostream>
-#include<complex>
-
-inline std::complex<float>
-juliaFn(std::complex<float> z, std::complex<float> c) {
-    return z * z + c;
-}
-
-bool juliaIter(
-        std::complex<float> z,
-        std::complex<float> c,
-        float radius,
-        unsigned int iterMax
-) {
-    unsigned int iter = 0;
-    while(std::norm(z) < radius && iter < iterMax) {
-        z = juliaFn(z, c);
-        ++iter;
-    }
-    return iter == iterMax;
-}
+#include "julia.hpp"
 
 class Window {
 private:
@@ -51,22 +32,20 @@ public:
         float yMin = -2.0;
         float xMax = 2.0;
         float yMax = 2.0;
-        float xDelta = (abs(xMax - xMin))/static_cast<float>(winSize.first);
-        float yDelta = (abs(yMax - yMin))/static_cast<float>(winSize.second);
         int winX;
         int winY;
         SDL_GetWindowSize(window, &winX, &winY);
         float xDelta = (abs(xMax - xMin))/static_cast<float>(winX);
         float yDelta = (abs(yMax - yMin))/static_cast<float>(winY);
+        JuliaSet set(0.35, 0.35, 4.0, 25);
         std::complex<float> z;
-        std::complex<float> c(0.35, 0.35);
 
         float x, y;
         int i,j;
         for(i = 0, x = xMin; i < winX; ++i, x+=xDelta) {
             for(j = 0, y = yMin; j < winY; ++j, y+=yDelta) {
                 z = std::complex<float>(x, y);
-                if(juliaIter(z, c, 4.0, 25)) {
+                if(set.isMember(z)) {
                     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
                     SDL_RenderDrawPoint(renderer, i, j); 
                 }
