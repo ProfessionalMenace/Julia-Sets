@@ -26,11 +26,7 @@ public:
         SDL_RenderClear(renderer);
     }
 
-    void juliaDraw() {
-        float xMin = -2.0;
-        float yMin = -2.0;
-        float xMax = 2.0;
-        float yMax = 2.0;
+    void juliaDraw(float xMin, float xMax, float yMin, float yMax) {
         int winX;
         int winY;
         SDL_GetWindowSize(window, &winX, &winY);
@@ -61,7 +57,7 @@ public:
         while (!quit) {
             if(!drawn) {
                 clear();
-                juliaDraw();
+                juliaDraw(-1.2, 1.2, -1.2, 1.2);
                 drawn = true;
             }
 
