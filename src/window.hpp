@@ -26,13 +26,13 @@ public:
         SDL_RenderClear(renderer);
     }
 
-    void juliaDraw(float xMin, float xMax, float yMin, float yMax) {
+    void juliaDraw(float re, float im, float xMin, float xMax, float yMin, float yMax) {
         int winX;
         int winY;
         SDL_GetWindowSize(window, &winX, &winY);
         float xDelta = (abs(xMax - xMin))/static_cast<float>(winX);
         float yDelta = (abs(yMax - yMin))/static_cast<float>(winY);
-        JuliaSet set(0.35, 0.35, 4.0, 25);
+        JuliaSet set(re, im, 4.0, 25);
         std::complex<float> z;
 
         float x, y;
@@ -49,7 +49,7 @@ public:
         SDL_RenderPresent(renderer);
     }
 
-    void run() {
+    void run(float re, float im) {
         bool quit = false;
         bool drawn = false;
         SDL_Event event;
@@ -57,7 +57,7 @@ public:
         while (!quit) {
             if(!drawn) {
                 clear();
-                juliaDraw(-1.2, 1.2, -1.2, 1.2);
+                juliaDraw(re, im, -1.2, 1.2, -1.2, 1.2);
                 drawn = true;
             }
 
