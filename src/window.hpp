@@ -50,21 +50,30 @@ public:
     }
 
     void forEachF() {
-        float xMax = static_cast<float>(winSize.first);
-        float yMax = static_cast<float>(winSize.second);
+        float xMin = -2.0;
+        float yMin = -2.0;
+        float xMax = 2.0;
+        float yMax = 2.0;
+        float xDelta = (abs(xMax - xMin))/static_cast<float>(winSize.first);
+        float yDelta = (abs(yMax - yMin))/static_cast<float>(winSize.second);
         std::complex<float> z;
         std::complex<float> c(0.35, 0.35);
-        bool draw;
-        for(float x = -1.0; x < 1.0; x+=0.001) {
-            for(float y = -1.0; y < 1.0; y+=0.001) {
+        std::cout << xDelta << " " << yDelta << "\n";
+
+        float x, y;
+        int i,j;
+        for(i = 0, x = xMin; i < winSize.first; ++i, x+=xDelta) {
+            std:: cout << x << ' ' << y << '\n';
+            for(j = 0, y = yMin; j < winSize.second; ++j, y+=yDelta) {
                 z = std::complex<float>(x, y);
                 if(juliaIter(z, c, 4.0, 25)) {
                     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-                    SDL_RenderDrawPointF(renderer, xMax*x, yMax*y); // float pos representing int
+                    SDL_RenderDrawPoint(renderer, i, j); 
                 }
             }
         }
         SDL_RenderPresent(renderer);
+        std::cout << "Drawn\n";
     }
 
     void run() {
