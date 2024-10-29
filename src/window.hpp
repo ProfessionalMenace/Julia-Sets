@@ -1,5 +1,4 @@
 #include <SDL2/SDL.h>
-#include <iostream>
 #include "julia.hpp"
 
 class Window {
@@ -27,7 +26,7 @@ public:
         SDL_RenderClear(renderer);
     }
 
-    void forEachF() {
+    void juliaDraw() {
         float xMin = -2.0;
         float yMin = -2.0;
         float xMax = 2.0;
@@ -52,7 +51,6 @@ public:
             }
         }
         SDL_RenderPresent(renderer);
-        std::cout << "Drawn\n";
     }
 
     void run() {
@@ -63,7 +61,7 @@ public:
         while (!quit) {
             if(!drawn) {
                 clear();
-                forEachF();
+                juliaDraw();
                 drawn = true;
             }
 
