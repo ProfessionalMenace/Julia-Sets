@@ -70,8 +70,12 @@ public:
                     break;
 
                 case SDL_WINDOWEVENT:
-                    if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                        drawn = false;
+                    switch (event.window.event) {
+                        case SDL_WINDOWEVENT_RESIZED:
+                        case SDL_WINDOWEVENT_MAXIMIZED:
+                        case SDL_WINDOWEVENT_RESTORED:
+                            drawn = false;
+                            break;
                     }
                     break;
             }
