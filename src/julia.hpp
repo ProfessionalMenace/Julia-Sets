@@ -22,6 +22,10 @@ public:
         constant = c;
     }
 
+    void setConstant(float re, float im) {
+        constant = std::complex<float>(re, im);
+    }
+
     int iterate(std::complex<float> z) {
         int iter = 0;
         while(std::norm(z) < radius && iter < iterMax) {
