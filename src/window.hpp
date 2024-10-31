@@ -1,68 +1,35 @@
 #include<SDL2/SDL.h>
-#include"display.hpp"
 
 class Window {
 private:
     SDL_Window *window;
-    SDL_Renderer *renderer;
 public:
-    Window(int w, int h)
-        :window(nullptr),
-        renderer(nullptr)
+    Window(int w, int h) : window(nullptr)
     {
         SDL_Init(SDL_INIT_VIDEO);
-        SDL_CreateWindowAndRenderer(w, h, SDL_WINDOW_RESIZABLE, &window, &renderer);
-        if(!window || !renderer){ exit(1); }
+        window = SDL_CreateWindow("Julia Sets",
+            SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED,
+            w,
+            h,
+            SDL_WINDOW_RESIZABLE
+            );
     }
     
     ~Window() {
-        SDL_DestroyWindow(window);
-        SDL_DestroyRenderer(renderer);
+        if(window) {
+            SDL_DestroyWindow(window);
+        }
         SDL_Quit();
     }
 
-    void clear() {
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+    SDL_Window* getWindow() const {
+        return window;
     }
 
-    void run(float re, float im) {
-        bool quit = false;
-        bool drawn = false;
-        SDL_Event event;
-        // rendering
-        JuliaSet set(re, im, 4.0, 25); 
-        Display display;
-        display.newBounds(-1.2, -1.2, 1.2, 1.2);
-        
-        int w, h;
-        while (!quit) {
-            if(!drawn) {
-                clear();
-                SDL_GetWindowSize(window, &w, &h);
-                display.winResize(w, h);
-                display.draw(renderer, &set); 
-                drawn = true;
-            }
-
-            SDL_WaitEvent(&event);
-
-            switch (event.type)
-            {
-                case SDL_QUIT:
-                    quit = true;
-                    break;
-
-                case SDL_WINDOWEVENT:
-                    switch (event.window.event) {
-                        case SDL_WINDOWEVENT_RESIZED:
-                        case SDL_WINDOWEVENT_MAXIMIZED:
-                        case SDL_WINDOWEVENT_RESTORED:
-                            drawn = false;
-                            break;
-                    }
-                break;
-            }
+    void getWSize(int *w, int *h) {
+        if(window) {
+            SDL_GetWindowSize(window, w, h);
         }
     }
 };
