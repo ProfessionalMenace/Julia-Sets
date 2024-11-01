@@ -8,17 +8,16 @@ class Application {
     public:
     Application(int w, int h) : display(w, h) {}
 
-    void run() {
+    void run(float re, float im) {
         bool quit = false;
         bool drawn = false;
         SDL_Event event;
         // rendering
-        JuliaSet set(0.35, 0.35, 4.0, 50); 
+        JuliaSet set(re , im, 4.0, 50); 
         display.newBounds(-1.2, -1.2, 1.2, 1.2);
         
         int w, h;
         int x, y;
-        float re, im;
         while (!quit) {
             if(!drawn) {
                 display.clear();
