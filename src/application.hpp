@@ -4,20 +4,26 @@
 class Application {
     private:
     Display display;
+    JuliaSet set;
+
     
     public:
-    Application(int w, int h) : display(w, h) {}
+    Application(int w, int h, float radius, int it) : display(w, h), set(radius, it) {}
+    Application(int w, int h) : display(w, h), set(4.0, 25) {}
 
-    void run(float re, float im) {
+
+
+    void run(JuliaSet set) {
         bool quit = false;
         bool drawn = false;
+        bool pressed = false;
         SDL_Event event;
         // rendering
-        JuliaSet set(re , im, 4.0, 50); 
         display.newBounds(-1.2, -1.2, 1.2, 1.2);
         
+        int mouseX, mouseY;
         int w, h;
-        int x, y;
+        float re, im;
         while (!quit) {
             if(!drawn) {
                 display.clear();
@@ -26,32 +32,45 @@ class Application {
                 drawn = true;
             }
 
-            SDL_WaitEvent(&event);
+            while(SDL_PollEvent(&event)) {
+                
 
-            switch (event.type)
-            {
-                case SDL_QUIT:
-                    quit = true;
-                    break;
+                switch (event.type)
+                {
+                    case SDL_QUIT:
+                        quit = true;
+                        break;
 
-                case SDL_MOUSEBUTTONDOWN:
-                    SDL_GetMouseState(&x, &y);
-                    display.getSize(&w, &h);
-                    re = (float)(2*x)/(float)w - 1.0;
-                    im = (float)(2*y)/(float)h - 1.0;
-                    set.setConstant(re, im);
-                    std::cout << re << " + " << im << "i\n";
-                    drawn = false;
-                    break;
+                    case SDL_MOUSEBUTTONDOWN:
+                        pressed = true;
+                        drawn = false;
+                        break;
 
-                case SDL_WINDOWEVENT:
-                    switch (event.window.event) {
-                        case SDL_WINDOWEVENT_RESIZED:
-                        case SDL_WINDOWEVENT_MAXIMIZED:
-                        case SDL_WINDOWEVENT_RESTORED:
+                    case SDL_MOUSEBUTTONUP:
+                        pressed = false;
+                        set.print();
+                        break;
+
+                    case SDL_MOUSEMOTION:
+                        if(pressed) {
+                            SDL_GetMouseState(&mouseX, &mouseY);
+                            display.getSize(&w, &h);
+                            re = static_cast<float>(2*mouseX)/w - 1.0;
+                            im = static_cast<float>(2*mouseY)/h - 1.0;
+                            set.setConstant(re, im);
                             drawn = false;
-                            break;
-                    }
+                        }
+                        break;
+
+                    case SDL_WINDOWEVENT:
+                        switch (event.window.event) {
+                            case SDL_WINDOWEVENT_RESIZED:
+                            case SDL_WINDOWEVENT_MAXIMIZED:
+                            case SDL_WINDOWEVENT_RESTORED:
+                                drawn = false;
+                                break;
+                        }
+                }
             }
         }
     }

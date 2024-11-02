@@ -1,17 +1,14 @@
 #include<complex>
+#include<iostream>
 
 class JuliaSet {
 private:
     std::complex<float> constant;
     float radius;
-    unsigned int iterMax;
+    int iterMax;
 public:
-    JuliaSet(float re, float im)
-        : constant(re,im) {}
-    JuliaSet(float re, float im, float radius)
-        : constant(re,im), radius{radius} {}
-    JuliaSet(float re, float im, float radius, unsigned int max)
-        : constant(re,im), radius{radius}, iterMax{max} {}
+    JuliaSet(float radius, int max)
+        : constant(0.0, 0.0), radius{radius}, iterMax{max} {}
 
     inline std::complex<float>
     function(std::complex<float> z) {
@@ -33,6 +30,10 @@ public:
             ++iter;
         }
         return iter;
+    }
+
+    void print() {
+        std::cout << constant << "\n";
     }
 
     bool isMember(std::complex<float> z) {
