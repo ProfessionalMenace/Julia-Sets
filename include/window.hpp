@@ -4,8 +4,8 @@ class Window {
 private:
     SDL_Window *window;
 public:
-    Window(int w, int h); 
+    Window(int w, int h);
     ~Window();
-    SDL_Window* getWindow();
+    SDL_Window* getWindow() const;
     void getWSize(int *w, int *h);
 };
