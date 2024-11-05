@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
             set.setConstant(re, im);
             break;
         default:
-            std::cerr << "Invalid number of nyarguments\n";
+            std::cerr << "Invalid number of arguments\n";
         }
 
     if(w < 1 || h < 1) {
