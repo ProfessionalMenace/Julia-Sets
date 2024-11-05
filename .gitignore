@@ -32,4 +32,9 @@
 *.app
 
 # Build path
+Build
 build
+Release
+release
+Debug
+debug
