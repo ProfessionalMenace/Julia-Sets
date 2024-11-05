@@ -2,6 +2,17 @@
 Application::Application(int w, int h, float radius, int it) : display(w, h), set(radius, it) {}
 Application::Application(int w, int h) : display(w, h), set(4.0, 25) {}
 
+void
+Application::updateSet(JuliaSet *set)
+{
+    int mouseX, mouseY, winW, winH;
+    float re, im;
+    SDL_GetMouseState(&mouseX, &mouseY);
+    display.getSize(&winW, &winH);
+    re = static_cast<float>(2*mouseX)/winW - 1.0;
+    im = static_cast<float>(2*mouseY)/winH - 1.0;
+    set->setConstant(re, im);
+}
 void 
 Application::run(JuliaSet set) {
     bool quit = false;
@@ -11,9 +22,6 @@ Application::run(JuliaSet set) {
     // rendering
     display.newBounds(-1.2, -1.2, 1.2, 1.2);
     
-    int mouseX, mouseY;
-    int w, h;
-    float re, im;
     while (!quit) {
         if(!drawn) {
             display.clear();
@@ -32,6 +40,7 @@ Application::run(JuliaSet set) {
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
+                    updateSet(&set);
                     pressed = true;
                     drawn = false;
                     break;
@@ -43,11 +52,7 @@ Application::run(JuliaSet set) {
 
                 case SDL_MOUSEMOTION:
                     if(pressed) {
-                        SDL_GetMouseState(&mouseX, &mouseY);
-                        display.getSize(&w, &h);
-                        re = static_cast<float>(2*mouseX)/w - 1.0;
-                        im = static_cast<float>(2*mouseY)/h - 1.0;
-                        set.setConstant(re, im);
+                        updateSet(&set);
                         drawn = false;
                     }
                     break;

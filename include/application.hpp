@@ -9,5 +9,6 @@ class Application {
     public:
     Application(int w, int h, float radius, int it);
     Application(int w, int h);
+    void updateSet(JuliaSet *set);
     void run(JuliaSet set);
 };
