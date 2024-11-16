@@ -1,5 +1,12 @@
 # Julia-Sets
-Fractal visualizer in C++ and SDL2 
+Julia sets is a simple CPU rendering project in C++ using SDL2.
+
+# Planned Features
+- [ ] GPU rendering
+- [ ] Proper GUI
+- [ ] Support for other fractals
+- [ ] Iteration based coloring
+- [ ] Output
 
 # Examples
 ## Julia Set where z = 0.4 + 0.4i, bounds are (-1.2, -1.2, 1.2, 1.2)
