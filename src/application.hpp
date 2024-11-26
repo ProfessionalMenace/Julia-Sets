@@ -58,7 +58,7 @@ private:
         int width, height;
         int mouse_x, mouse_y;
 
-        Display display(4.0, 25);
+        Display display(4.0, 50);
         display.set_bounds(-1.2, -1.2, 1.2, 1.2);
 
         while (is_running) {
@@ -66,6 +66,7 @@ private:
                 SDL_GetWindowSize(window, &width, &height);
                 display.update_size(width, height);
                 is_resized = false;
+                is_drawn = false;
             }
 
             if(mouse_input) {
@@ -75,10 +76,11 @@ private:
                     static_cast<float>(2 * mouse_y) / height - 1.0
                 );
                 mouse_input = false;
+                is_drawn = false;
             }
 
             if(!is_drawn) {
-                display.redraw(renderer, width, height);
+                display.redraw(renderer);
                 is_drawn = true;
             }
 
@@ -100,20 +102,13 @@ private:
 
                     case SDL_MOUSEMOTION:
                     if(is_pressed) {
-                        is_drawn = false;
                         mouse_input = true;
                     }
                     break;
 
                     case SDL_WINDOWEVENT:
-                    switch (event.window.event) {
-                        case SDL_WINDOWEVENT_RESIZED:
-                        case SDL_WINDOWEVENT_MAXIMIZED:
-                        case SDL_WINDOWEVENT_RESTORED:
-                            is_resized = true;
-                            is_drawn = false;
-                            break;
-                    }
+                    is_resized = true;
+                    break;
                 }
             }
         }

@@ -1,5 +1,4 @@
 #include<SDL2/SDL.h>
-#include<iostream>
 #include<complex>
 
 class Display {
@@ -7,6 +6,7 @@ private:
     float radius;
     int iterMax;
     std::complex<float> constant;
+    int width, height;
     float xMin, xMax;
     float yMin, yMax;
     float xDelta, yDelta;
@@ -26,7 +26,7 @@ private:
         SDL_RenderClear(renderer);
     }
 
-    void draw(SDL_Renderer *renderer, int width, int height) {
+    void draw(SDL_Renderer *renderer) {
         if(!renderer || xDelta == 0.0 || yDelta == 0.0) {
             return;
         }
@@ -60,14 +60,16 @@ public:
         constant = std::complex<float>(re, im);
     }
 
-    void update_size(int width, int height) {
-        xDelta = (xMax - xMin) / static_cast<float>(width);
-        yDelta = (yMax - yMin) / static_cast<float>(height);
+    void update_size(int w, int h) {
+        width = w;
+        height = h;
+        xDelta = (xMax - xMin) / static_cast<float>(w);
+        yDelta = (yMax - yMin) / static_cast<float>(h);
     }
 
-    void redraw(SDL_Renderer *renderer, int width, int height) {
+    void redraw(SDL_Renderer *renderer) {
         clear(renderer);
-        draw(renderer, width, height);
+        draw(renderer);
     }
 };
     
