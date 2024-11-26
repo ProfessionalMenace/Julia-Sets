@@ -1,4 +1,5 @@
 #include<SDL2/SDL.h>
+#include <stdio.h>
 #include<complex>
 
 class Display {
@@ -58,6 +59,10 @@ public:
 
     void set_constant(float re, float im) {
         constant = std::complex<float>(re, im);
+    }
+
+    void print_constant() {
+        printf("%+5f %+5f\n", this->constant.real(), this->constant.imag());
     }
 
     void update_size(int w, int h) {

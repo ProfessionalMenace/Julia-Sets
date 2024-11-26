@@ -97,7 +97,7 @@ private:
 
                     case SDL_MOUSEBUTTONUP:
                     is_pressed = false;
-                    std::cout << mouse_x << " " << mouse_y << std::endl;
+                    display.print_constant();
                     break;
 
                     case SDL_MOUSEMOTION:
