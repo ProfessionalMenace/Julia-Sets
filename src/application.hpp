@@ -58,7 +58,7 @@ private:
         int width, height;
         int mouse_x, mouse_y;
 
-        Display display(4.0, 50);
+        Display display(renderer, 100, 4.0);
         display.set_bounds(-1.2, -1.2, 1.2, 1.2);
 
         while (is_running) {
@@ -80,7 +80,7 @@ private:
             }
 
             if(!is_drawn) {
-                display.redraw(renderer);
+                display.redraw();
                 is_drawn = true;
             }
 
