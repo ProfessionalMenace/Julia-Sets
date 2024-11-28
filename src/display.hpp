@@ -33,7 +33,7 @@ private:
         float x, y;
         SDL_SetRenderDrawColor(mRenderer, 255, 255, 255, 255);
         for(i = 0, x = mXMin; i < mWidth; ++i,  x+= mXDelta) {
-            for(j = 0, y = mXMin; j < mHeight; ++j, y += mXDelta) {
+            for(j = 0, y = mYMin; j < mHeight; ++j, y += mYDelta) {
                 if(calculate(x, y) == mIterMax) {
                     SDL_RenderDrawPoint(mRenderer, i, j);
                 }
@@ -67,7 +67,7 @@ public:
     void update_size(int width, int height) {
         mWidth = width;
         mHeight = height;
-        mXDelta = (mXMax - mYMin) / static_cast<float>(width);
+        mXDelta = (mXMax - mXMin) / static_cast<float>(width);
         mYDelta = (mYMax - mYMin) / static_cast<float>(height);
     }
 
