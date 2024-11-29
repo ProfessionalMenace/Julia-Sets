@@ -47,7 +47,7 @@ private:
         SDL_GetWindowSize(window, w, h);
     }
 
-    void main_loop() {
+    void main_loop(float re, float im, int iter, float radius) {
         std::cout << "Starting main loop...\n";
         bool is_running = true;
         bool is_drawn = false;
@@ -58,7 +58,8 @@ private:
         int width, height;
         int mouse_x, mouse_y;
 
-        Display display(renderer, 100, 4.0);
+        Display display(renderer, iter, radius);
+        display.set_constant(re, im);
         display.set_bounds(-1.2, -1.2, 1.2, 1.2);
 
         while (is_running) {
@@ -115,9 +116,9 @@ private:
     }
 
 public:
-    void run() {
+    void run(float re, float im, int iter, float radius) {
         window_init(600, 600);
-        main_loop();
+        main_loop(re, im, iter, radius);
         window_deinit();
     }
 };
