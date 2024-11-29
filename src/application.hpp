@@ -9,7 +9,6 @@ private:
 
     void window_init(int w, int h)
     {
-        std::cout << "Initailizing window...\n";
         if(SDL_Init(SDL_INIT_VIDEO) == -1) {
             std::cerr << "Window initialization failed\n" << SDL_GetError();
             exit(EXIT_FAILURE);
@@ -38,7 +37,6 @@ private:
     }
 
     void window_deinit() {
-        std::cout << "Destroying window...\n";
         SDL_DestroyWindow(window);
         SDL_Quit();
     }
@@ -48,7 +46,6 @@ private:
     }
 
     void main_loop(float re, float im, int iter, float radius) {
-        std::cout << "Starting main loop...\n";
         bool is_running = true;
         bool is_drawn = false;
         bool is_pressed = false;
