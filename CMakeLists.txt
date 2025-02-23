@@ -1,14 +1,16 @@
 cmake_minimum_required(VERSION 3.10)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS_DEBUG_INIT "-g -Wall -WExtra -WPedantic")
-set(CMAKE_CXX_FLAGS_RELEASE_INIT "-O3")
+set(CMAKE_CXX_STANDARD 23)
+project("Julia Sets")
 
-project(Julia-Sets VERSION 1.0)
+find_package(glfw)
+find_package(OpenGL REQUIRED)
+find_package(imgui REQUIRED)
 
 # EXECUTABLE
 add_executable(application src/main.cpp)
 
-# SDL2 LIBRARY
-find_package(SDL2 REQUIRED)
-target_link_libraries(application SDL2)
+# LIBRARY
+target_link_libraries(application glfw)
+target_link_libraries(application OpenGL)
+target_link_libraries(application imgui)
 

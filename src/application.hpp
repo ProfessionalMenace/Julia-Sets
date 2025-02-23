@@ -1,121 +1,87 @@
-#include<SDL2/SDL.h>
-#include<iostream>
-#include"display.hpp"
+#include <GLFW/glfw3.h>
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
-class Application {
-private:
-    SDL_Window *window;
-    SDL_Renderer *renderer;
+#include "display.hpp"
+#include <iostream>
 
-    void window_init(int w, int h)
-    {
-        if(SDL_Init(SDL_INIT_VIDEO) == -1) {
-            std::cerr << "Window initialization failed\n" << SDL_GetError();
+struct Application {
+    GLFWwindow* window;
+
+    Application(size_t width, size_t height) : window(nullptr) {
+        if (!glfwInit()) {
+            std::cerr << "ERR: FAILED TO INITIALIZE GLFW\n";
             exit(EXIT_FAILURE);
         }
 
-        window = SDL_CreateWindow("Fractal",
-            SDL_WINDOWPOS_UNDEFINED,
-            SDL_WINDOWPOS_UNDEFINED,
-            w,
-            h,
-            SDL_WINDOW_RESIZABLE
-            );
+        window = glfwCreateWindow(width, height, "Julia Sets", NULL, NULL);
 
-        if(!window) {
-            std::cerr << "Failed to create window\n";
+        if (!window)
+        {
+            glfwTerminate();
+            std::cerr << "ERR: FAILERD TO CREATE A WINDOW\n";
             exit(EXIT_FAILURE);
         }
 
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
+        glfwMakeContextCurrent(window);
+        glfwSwapInterval(1);
 
-        if(!renderer) {
-            std::cerr << "Failed to create renderer\n";
-            exit(EXIT_FAILURE);
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO &io = ImGui::GetIO();
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init();
+        ImGui::StyleColorsDark();
+       }
+
+    ~Application() {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+        
+        if(window) {
+            glfwDestroyWindow(window);
+        }
+        glfwTerminate();
+    }
+
+    void run() {
+        Display display;
+        glfwMakeContextCurrent(window);
+        int it = 25;
+        float re = 0.0f, im = 0.0f, radius = 4.0f;
+
+        while (!glfwWindowShouldClose(window))
+        {
+            glfwPollEvents();
+
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+
+
+            ImGui::NewFrame();
+            ImGui::Begin("Julia Sets");
+            ImGui::DragInt("Iterations", &it, 1);
+            ImGui::DragFloat("Radius", &radius, 0.005f);
+            ImGui::DragFloat("Real", &re, 0.005f);
+            ImGui::DragFloat("Imaginary", &im, 0.005f);
+            ImGui::End();
+
+            display.set_iteration(it);
+            display.set_radius(radius);
+            display.set_constant({re, im});
+            
+
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+            display.draw(width, height);
+            
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            glfwSwapBuffers(window);
         }
 
-    }
 
-    void window_deinit() {
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-    }
-
-    void get_window_size(int *w, int *h) {
-        SDL_GetWindowSize(window, w, h);
-    }
-
-    void main_loop(float re, float im, int iter, float radius) {
-        bool is_running = true;
-        bool is_drawn = false;
-        bool is_pressed = false;
-        bool is_resized = true;
-        bool mouse_input = false;
-        SDL_Event event;
-        int width, height;
-        int mouse_x, mouse_y;
-
-        Display display(renderer, iter, radius);
-        display.set_constant(re, im);
-        display.set_bounds(-1.2, -1.2, 1.2, 1.2);
-
-        while (is_running) {
-            if(is_resized) {
-                SDL_GetWindowSize(window, &width, &height);
-                display.update_size(width, height);
-                is_resized = false;
-                is_drawn = false;
-            }
-
-            if(mouse_input) {
-                SDL_GetMouseState(&mouse_x, &mouse_y);
-                display.set_constant(
-                    static_cast<float>(2 * mouse_x) / width - 1.0, 
-                    static_cast<float>(2 * mouse_y) / height - 1.0
-                );
-                mouse_input = false;
-                is_drawn = false;
-            }
-
-            if(!is_drawn) {
-                display.redraw();
-                is_drawn = true;
-            }
-
-            while(SDL_PollEvent(&event)) {
-                switch (event.type) {
-                    case SDL_QUIT:
-                    is_running = false;
-                    break;
-
-                    case SDL_MOUSEBUTTONDOWN:
-                    is_pressed = true;
-                    mouse_input = true;
-                    break;
-
-                    case SDL_MOUSEBUTTONUP:
-                    is_pressed = false;
-                    display.print_constant();
-                    break;
-
-                    case SDL_MOUSEMOTION:
-                    if(is_pressed) {
-                        mouse_input = true;
-                    }
-                    break;
-
-                    case SDL_WINDOWEVENT:
-                    is_resized = true;
-                    break;
-                }
-            }
-        }
-    }
-
-public:
-    void run(float re, float im, int iter, float radius) {
-        window_init(600, 600);
-        main_loop(re, im, iter, radius);
-        window_deinit();
     }
 };
