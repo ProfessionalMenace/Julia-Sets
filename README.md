@@ -1,11 +1,11 @@
 # Julia-Sets
-Julia sets is a simple CPU rendering project in C++ using SDL2.
+Julia sets is a simple CPU rendering project in C++ using GLFW + OpenGL.
 
 # Planned Features
-- [ ] GPU rendering
-- [ ] Proper GUI
+- [x] GPU rendering
+- [x] Proper GUI
 - [ ] Support for other fractals
-- [ ] Iteration based coloring
+- [x] Iteration based coloring
 - [ ] Output
 
 # Examples
