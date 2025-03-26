@@ -1,6 +1,6 @@
-#include"application.hpp"
+#include "application.hpp"
 
-int main(int argc, char* argv[]) {
-   Application app(900, 900);
-   app.run();
+int main(int argc, char *argv[]) {
+    Application app(900, 900);
+    app.run();
 }
