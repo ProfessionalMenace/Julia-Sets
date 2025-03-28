@@ -4,6 +4,22 @@
 #include <complex>
 #include <execution>
 #include <vector>
+#include <chrono>
+#include <print>
+#include <string_view> 
+
+struct Timer {
+    std::string_view message_;
+    std::chrono::time_point<std::chrono::system_clock> start_;
+    Timer(std::string_view message) 
+        : message_(message), start_(std::chrono::high_resolution_clock::now()) {} 
+    ~Timer() {
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start_);
+        println("Duration of {}: {}", message_, duration);
+        start_ = end;
+    }
+};
 
 class Display {
     double Radius;
@@ -57,6 +73,7 @@ public:
             }
         }
 
+        Timer timer("Draw");
         glBegin(GL_POINTS);
         std::for_each(std::execution::par_unseq, vec.begin(), vec.end(), [this](std::complex<double> &z) {
             color(calculate(z));
