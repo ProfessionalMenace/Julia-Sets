@@ -4,6 +4,7 @@
 #include <complex>
 #include <execution>
 #include <vector>
+#include <span>
 #include <chrono>
 #include <print>
 #include <string_view> 
@@ -25,11 +26,12 @@ class Display {
     double Radius;
     int IterMax;
     std::complex<double> Min, Max, Constant;
+    std::vector<std::complex<double>> point_buffer;
 
-    inline int calculate(std::complex<double> z) {
+    inline int calculate(std::complex<double> z, std::complex<double> c) {
         int iter = 0;
         while (std::norm(z) < Radius && iter < IterMax) {
-            z = z * z + Constant;
+            z = z * z + c;
             ++iter;
         }
         return iter;
@@ -41,7 +43,7 @@ class Display {
     }
 
 public:
-    Display() : Radius(4.0), IterMax(25), Min(-1.2, -1.2), Max(1.2, 1.2), Constant(0.0, 0.0) {
+    Display(size_t max_width, size_t max_height) : Radius(), IterMax(), Min(-1.2, -1.2), Max(1.2, 1.2), Constant(), point_buffer(max_width * max_height) {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(Min.real(), Max.real(), Min.imag(), Max.imag(), -1.0, 1.0);
@@ -66,19 +68,23 @@ public:
         double xdelta = (Max.real() - Min.real()) / static_cast<double>(width);
         double ydelta = (Max.imag() - Min.imag()) / static_cast<double>(height);
 
-        std::vector<std::complex<double>> vec(width * height);
-        for (int i = 0; i < width; ++i) {
-            for (int j = 0; j < height; ++j) {
-                vec[i * height + j] = Min + std::complex<double>(i * xdelta, j * ydelta);
+        for (int y = 0; y < height ; ++y) {
+            for (int x = 0; x < width; ++x) {
+                point_buffer[y * width + x] = Min + std::complex<double>(x * xdelta, y * ydelta);
             }
         }
 
         Timer timer("Draw");
         glBegin(GL_POINTS);
-        std::for_each(std::execution::par_unseq, vec.begin(), vec.end(), [this](std::complex<double> &z) {
-            color(calculate(z));
-            glVertex2d(z.real(), z.imag());
-        });
+        // mdspan soon... 
+        std::span<std::complex<double>> span_buffer(point_buffer); 
+        for (int i = 0; i < height; ++i) {
+            auto span_row = span_buffer.subspan(i*width, width);
+            std::for_each(std::execution::par_unseq, span_row.begin(), span_row.end(), [this](std::complex<double> &z) {
+                color(calculate(z, Constant));
+                glVertex2d(z.real(), z.imag());
+            });
+        }
         glEnd();
     }
 };

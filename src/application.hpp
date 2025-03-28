@@ -46,7 +46,7 @@ struct Application {
     }
 
     void run() {
-        Display display;
+        Display display(1920, 1080);
         glfwMakeContextCurrent(window);
         int it = 50;
         float re = 0.0f, im = 0.0f, radius = 4.0f;
