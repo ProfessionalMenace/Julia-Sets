@@ -48,8 +48,7 @@ struct Application {
     void run() {
         Display display;
         glfwMakeContextCurrent(window);
-        bool drawing = true;
-        int it = 25;
+        int it = 50;
         float re = 0.0f, im = 0.0f, radius = 4.0f;
 
         while (!glfwWindowShouldClose(window)) {
@@ -64,18 +63,15 @@ struct Application {
             ImGui::DragFloat("Radius", &radius, 0.001f);
             ImGui::DragFloat("Real", &re, 0.0005f);
             ImGui::DragFloat("Imaginary", &im, 0.0005f);
-            ImGui::Checkbox("Draw", &drawing);
             ImGui::End();
 
             display.set_iteration(it);
             display.set_radius(radius);
             display.set_constant({re, im});
 
-            if (drawing) {
-                int width, height;
-                glfwGetFramebufferSize(window, &width, &height);
-                display.draw(width, height);
-            }
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+            display.draw(width, height);
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
